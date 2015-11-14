@@ -1,0 +1,1 @@
+export(getDataFromDb,getWeatherDataFromTxt,getPlantDataFromTxt , getIrrigDataFromTxt, getSoilDataFromTxt,runSimulation, getWbal,getPlant,getSW,getTextExamplePath)

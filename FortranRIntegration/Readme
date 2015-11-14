@@ -1,0 +1,49 @@
+This package depends on RMySQL for data base funcions.
+
+Instructions:
+
+To run the simulation you need 4 sets of inputs and 2 control values, they are weather, soil, plant, irrig, doyp and from. They need 
+to have exactly the same format and order. The data can be obtained by the filesystem or data base.
+
+Example of running the simulation with filesystem data, you can pass the path by argument, the defaut is the example data folder of the package.
+
+
+########            loading data           ##########
+doyp<-121
+frop<-3
+weather<-getWeatherDataFromTxt()
+soil<-getSoilDataFromTxt()
+irrig<-getIrrigDataFromTxt()
+plant<-getPlantDataFromTxt()
+########   running the fortran simulation   ##########
+runSimulation(weather,plant,soil,irrig,doyp,frop)
+#######         getting the results         ##########
+plantResult<-getPlant()
+wBalResult<-getWbal()
+soilWaterResult<-getSW()
+
+Its not recommended to use Working Directory in this path because files can be overwrited.
+
+Example of running the simulation with MySql databse data.
+
+#######  setting the database configuration parameter   #########
+dbConfig<-list(host='localhost', user='root', dbname='RFortran', password='132363')
+########            loading data           ##########
+doyp<-121
+frop<-3
+weather<-getDataFromDb(dbConfig,'select date, solarrad, tmpmax, tmpmin, rain, par from weather')
+irrig<-getDataFromDb(dbConfig,'select * from irrig')
+soil<-getDataFromDb(dbConfig,'select wpp, fcp, stp, format(dp,2), format(drnp,2), format(cn,2), swc from soil')
+plant<-getDataFromDb(dbConfig,'select format(lfmax,1), empr2, empr1, format(pd,1), nb, rm, fc, format(tb,1), format(intot,1), format(n,1), lai, w, wr, wc, p1, f1 from plant')
+########   running the fortran simulation   ##########
+runSimulation(weather,plant,soil,irrig,doyp,frop)
+#######         getting the results         ##########
+plantResult<-getPlant()
+wBalResult<-getWbal()
+soilWaterResult<-getSW()
+
+There is a database creation script as example on the ex folder of the package.
+
+
+
+Tiago Zortea

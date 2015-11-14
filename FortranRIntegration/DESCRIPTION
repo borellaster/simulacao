@@ -1,0 +1,9 @@
+Title: ICASA modular crop Model Development example integration with R
+Package: FortranRIntegration
+Version: 0.1.0
+Author: Tiago Zortea
+Maintainer: Tiago Zortea <tiagozortea@hotmail.com>
+Depends: gdata
+Description: It shows a structure that can encapsulate a fortran simulation and port it to R so the simulation can have much more versatility.
+License: GPL (>= 2)
+Packaged: 2010-05-18 00:57:22 UTC; root
