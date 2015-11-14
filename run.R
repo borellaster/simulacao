@@ -14,7 +14,7 @@ i <- getIrrigDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
 soil <- getSoilDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
 plant <- getPlantDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
 
-runSimulation(weather = weatherData,plant = plant,soil = soil,irrig = i,doyp = 1, frop = 1)
+runSimulation(weather = w,plant = plant,soil = soil,irrig = i,doyp = 1, frop = 1)
 
 ### coletar dados
 

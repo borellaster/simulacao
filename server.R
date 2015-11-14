@@ -4,7 +4,6 @@ library(RCurl)
 library(rjson)
 library(FortranRIntegration)
 library(shiny)
-library(DT)
 
 
 # load the data ---------------------------------------------------------------

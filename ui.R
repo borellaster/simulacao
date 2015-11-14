@@ -16,17 +16,4 @@ shinyUI(pageWithSidebar(
     )
   )
   
-  #mainPanel(
-    #h3("Gráfico") 
-    
-    
-    #dataTableOutput(outputId="uiTable")
-    
-    # Create a new row for the table.
-    #fluidRow(
-    #  dataTableOutput(outputId="uiTable")
-    #) # end table 
-    
-  #)   # end mainPanel
-  
-))    # end page
+))
