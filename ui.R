@@ -1,5 +1,3 @@
-##### ui.R #####
-
 library(shiny)
 
 shinyUI(pageWithSidebar(
