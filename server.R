@@ -30,15 +30,14 @@ colnames(dataStation)[1] <- "ID"
 colnames(dataStation)[2] <- "Name"
 
 
-
 #shiny server body
 shinyServer(function(input, output, session) { 
   output$ui <- renderUI({
     sidebarPanel(
-      selectInput(inputId = "cbxSoil", 
-                  label = "Escolher o Solo",
-                  choices = c("Solo 1", "Solo 2", "Solo 3"),
-                  selectize = FALSE)
+      selectInput(inputId = "cbxStations", 
+                  label = "Escolher a estação",
+                  choices = c(dataStation$name),
+                  selectize = TRUE)
     )
   })
   
