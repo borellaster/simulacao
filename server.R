@@ -36,7 +36,7 @@ shinyServer(function(input, output, session) {
     sidebarPanel(
       selectInput(inputId = "cbxStations", 
                   label = "Escolher a estação",
-                  choices = c(dataStation$name),
+                  choices = c(dataStation),
                   selectize = TRUE)
     )
   })
