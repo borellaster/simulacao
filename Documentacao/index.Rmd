@@ -1,18 +1,18 @@
 ---
-title: "2015-2 - Modelagem e Simulação Computacional"
+title: "2015-2 - Modelagem e SimulaÃ§Ã£oo Computacional"
 author: "Alunos"
 date: "06 de novembro de 2015"
 output: html_document
 ---
 ## Clima
-Os dados meteorológicos são fornecidos pelo serviço sisalert. 
+Os dados meteorolÃ³gicos sÃ£o fornecidos pelo serviÃ§o sisalert. 
 
 
-### Estações
+### EstaÃ§Ãµes
 ```{r}
 station <- "5602a58b92c884831962ceea"
 ```
-Os códigos das estações estão disponíveis no link abaixo em formato JSON(JavaScript Object Notation), no campo _id, ilustrado na Imagem 1:
+Os cÃ³digos das estaÃ§Ãµes estÃ£o disponÃ­veis no link abaixo em formato JSON(JavaScript Object Notation), no campo _id, ilustrado na Imagem 1:
 
 http://dev.sisalert.com.br/apirest/api/v1/stations
 
@@ -20,11 +20,11 @@ http://dev.sisalert.com.br/apirest/api/v1/stations
 Imagem 1
 
 
-### Dados metereológicos
+### Dados metereolÃ³gicos
 ```{r}
 range <- "01-11-2014/01-01-2015"
 ```
-Indica qual o intervalo usado para selecionar os dados metereológicos. A data inicial está localizada antes do / e a data final depois do /.
+Indica qual o intervalo usado para selecionar os dados metereolÃ³gicos. A data inicial estÃ¡ localizada antes do / e a data final depois do /.
 
 ```{r}
 datainicial <- "01-11-2014"
@@ -37,7 +37,7 @@ datafinal <- "01-01-2015"
 Data final
 
 
-Com os dados de entrada fornecidos, é possivel montar a URL para solicitar os dados de clima
+Com os dados de entrada fornecidos, Ã© possivel montar a URL para solicitar os dados de clima
 
 http://dev.sisalert.com.br/apirest/api/v1/data/station/model/5602a58b92c884831962ceea/range/01-11-2014/01-01-2015
 
@@ -56,3 +56,4 @@ weatherData <- do.call(rbind, lapply(jsonWeather, function(x) data.frame(x)))
 
 head (weatherData)
 ```
+
