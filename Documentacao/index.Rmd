@@ -1,7 +1,7 @@
 ---
 title: "2015-2 - Modelagem e Simulaçãoo Computacional"
 author: "Alunos"
-date: "06 de novembro de 2015"
+date: "15 de novembro de 2015"
 output: html_document
 ---
 ## Clima
@@ -57,3 +57,49 @@ weatherData <- do.call(rbind, lapply(jsonWeather, function(x) data.frame(x)))
 head (weatherData)
 ```
 
+## Solo
+
+##Ajustando o modelo para três tipos de solo:
+
+Após definido a bibliografia base, definiu-se três tipos de solo:
+
+Solo arenoso, com teor de argila de 152 g kg-1;
+
+Solo médio com teor de argila de 420 g kg-1;
+
+Solo argiloso com teor de argila de 716 g kg-1;
+
+Na tabela 1 abaixo ilustramos os parametros para cada tipo de solo:
+
+#### Tabela 1-Tipos de solos e suas caracteristicas
+!["tipos de solo"](TABELA-SOLOS.png)
+
+
+CN: número de curva, utilizado a tabela contida em (5);
+
+DP: profundidade do perfil do solo, utilizado a tabela contida em (5);
+
+STp: umidade do solo saturado;
+
+FCp: umidade do solo na capacidade de campo;
+
+WPp: umidade do solo no ponto de murcha permanente;
+
+DNRp: percentual de drenagem diária;
+
+SWC: lamina de água disponível no perfil de solo considerado (mm).
+Para calcular os valores de STp, FCp, WPp, DNRp e SWC se utilizou os parametros do modelo de Van Genuchten.
+
+###Assim, os cálculos para cada tipo de solo são:
+
+####Para o solo arenoso:
+
+!["tipos de solo"](SOLO-ARENOSO.png)
+
+####Para o solo médio:
+
+!["tipos de solo"](SOLO-MEDIO.png)
+
+####Para o solo argiloso:
+
+!["tipos de solo"](SOLO-ARGILOSO.png)
