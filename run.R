@@ -19,6 +19,7 @@ json <- fromJSON(dataCurl)
 dataStation <- do.call(rbind, lapply(json, function(x) data.frame(x)))
 
 
+
 w <- getWeatherDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
 
 i <- getIrrigDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
@@ -32,4 +33,6 @@ runSimulation(weather = weatherData,plant = plant,soil = soil,irrig = i,doyp = 1
 plantOut <- read.table("plant.out",skip = 9)
 swOut <- read.table("sw.out",skip = 6)
 wbalOut <- read.table("WBAL.OUT",skip = 4, sep = ":")
+
+initialStation
 

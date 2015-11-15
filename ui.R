@@ -9,7 +9,7 @@ shinyUI(pageWithSidebar(
   mainPanel(
     tabsetPanel(
       tabPanel("Resultados da Simulação", dataTableOutput(outputId="tableResults")),
-      tabPanel("Resultados", dataTableOutput(outputId="tableFinal"))
+      tabPanel("Balanço hídrico do solo SAZONAL", dataTableOutput(outputId="tableFinal"))
     )
   )
   
