@@ -8,8 +8,9 @@ shinyUI(pageWithSidebar(
   
   mainPanel(
     tabsetPanel(
-      tabPanel("Gráficos", plotOutput("plot")),
-      tabPanel("Resultados", dataTableOutput(outputId="table")) 
+      tabPanel("Gráficos", textOutput("stations")),
+      tabPanel("Resultados", dataTableOutput(outputId="table")),
+      tabPanel("Estações Disponíveis", dataTableOutput(outputId="stationsTable"))
       
     )
   )
