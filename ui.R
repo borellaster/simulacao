@@ -9,9 +9,10 @@ shinyUI(pageWithSidebar(
   
   mainPanel(
     tabsetPanel(
-      tabPanel("Resultados da Simulação", dataTableOutput(outputId="tableResultsSoil")),
       tabPanel("Resultados da Simulação Planta", dataTableOutput(outputId="tableResultsPlant")),
-      tabPanel("Balanço hídrico do solo SAZONAL", dataTableOutput(outputId="tableFinal")),
+      tabPanel("Estações", dataTableOutput(outputId="tableResultsStation")),
+      tabPanel("Solo", dataTableOutput(outputId="tableResultsSoil")),
+      tabPanel("Balanço hídrico SAZONAL", dataTableOutput(outputId="tableFinal")),
       tabPanel("Sobre", includeMarkdown("Documentacao/index.Rmd"))
     )
   )

@@ -1,4 +1,5 @@
-setwd("/Users/pba/Simulacao/FortranRIntegration")
+path <- "/Users/pba/github/simulacao/FortranRIntegration"
+setwd(path)
 library(RCurl)
 library(rjson)
 library(FortranRIntegration)
@@ -6,10 +7,10 @@ library(shiny)
 
 
 #load the data
-w <- getWeatherDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
-i <- getIrrigDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
-soil <- getSoilDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
-plant <- getPlantDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
+w <- getWeatherDataFromTxt(paste(path,"/data/", sep = ""))
+i <- getIrrigDataFromTxt(paste(path,"/data/", sep = ""))
+soil <- getSoilDataFromTxt(paste(path,"/data/", sep = ""))
+plant <- getPlantDataFromTxt(paste(path,"/data/", sep = ""))
 
 #collect stations
 dataCurl <- getURLContent(paste("http://dev.sisalert.com.br/apirest/api/v1/stations",sep = ""))
@@ -67,6 +68,10 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  output$tableResultsPlant <- renderDataTable({
+    data <- plantOut
+  })
+  
   output$tableResultsSoil <- renderDataTable({
     data <- swOut
   })
@@ -75,7 +80,7 @@ shinyServer(function(input, output, session) {
     data <- wbalOut
   })
   
-  output$tableResultsPlant <- renderDataTable({
+  output$tableResultsStation <- renderDataTable({
     data <- dataStation
   })
   
