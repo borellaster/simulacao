@@ -1,4 +1,5 @@
 library(shiny)
+library("FortranRIntegration")
 
 shinyUI(pageWithSidebar(
   
@@ -8,9 +9,11 @@ shinyUI(pageWithSidebar(
   
   mainPanel(
     tabsetPanel(
-      tabPanel("Resultados da Simulação", dataTableOutput(outputId="tableResults")),
-      tabPanel("Balanço hídrico do solo SAZONAL", dataTableOutput(outputId="tableFinal"))
+      tabPanel("Resultados da Simulação", dataTableOutput(outputId="tableResultsSoil")),
+      tabPanel("Resultados da Simulação Planta", dataTableOutput(outputId="tableResultsPlant")),
+      tabPanel("Balanço hídrico do solo SAZONAL", dataTableOutput(outputId="tableFinal")),
+      tabPanel("Sobre", includeMarkdown("Documentacao/index.Rmd"))
     )
   )
-  
 ))
+

@@ -15,9 +15,7 @@ plant <- getPlantDataFromTxt("/Users/pba/Simulacao/FortranRIntegration/data/")
 dataCurl <- getURLContent(paste("http://dev.sisalert.com.br/apirest/api/v1/stations",sep = ""))
 json <- fromJSON(dataCurl)
 dataStation <- do.call(rbind, lapply(json, function(x) data.frame(x)))
-
 station <- dataStation$X_id[1]
-
 
 #change de colnames
 colnames(dataStation)[1] <- "ID"
@@ -40,55 +38,45 @@ runSimulation(weather = weatherData,plant = plant,soil = soil,irrig = i,doyp = 1
 plantOut <- read.table("plant.out",skip = 9)
 swOut <- read.table("sw.out",skip = 6)
 wbalOut <- read.table("WBAL.OUT",skip = 4, sep = ":")
+
+#change de colnames for plantOut
+colnames(plantOut) <- c("Dia do Ano", "Número de Folhas", "Acum.Temp. Reprod. (oC)", "Peso da Planta (g/m2)",
+                        "Peso do Docel (g/m2)", "Peso da Raiz (g/m2)", "Peso da Fruta (g/m2)", 
+                        "Ind. Area Foliar (m2/m2)")
+
 #change de colnames for wbalOut
-colnames(wbalOut)[1] <- "Description"
-colnames(wbalOut)[2] <- "Values"
+colnames(wbalOut) <- c("Descrição", "Valores")
 
 #change de colnames for swOut
-colnames(swOut)[1] <- "Dia do ano"
-colnames(swOut)[2] <- "Rad. Solar(MJ/m2)"
-colnames(swOut)[3] <- "Temp. Max(oC)"
-colnames(swOut)[4] <- "Temp. Min(oC)"
-colnames(swOut)[5] <- "Chuva(mm)"
-colnames(swOut)[6] <- "Irrig.(mm)"
-colnames(swOut)[7] <- "Escoamento(mm)"
-colnames(swOut)[8] <- "Infil.(mm)"
-colnames(swOut)[9] <- "Drenagem(mm)"
-colnames(swOut)[10] <- "Evapo. Transp(mm)"
-colnames(swOut)[11] <- "Evapo. Solo(mm)"
-colnames(swOut)[12] <- "Evapo. Planta(mm)"
-colnames(swOut)[13] <- "Agua no solo(mm)"
-colnames(swOut)[14] <- "Agua no solo(mm3/mm3)"
-colnames(swOut)[15] <- "Estresse hídrico"
-colnames(swOut)[16] <- "Excesso de estresse hídrico"
+colnames(swOut) <- c("Dia do ano", "Rad. Solar(MJ/m2)", "Temp. Max(oC)", "Temp. Min(oC)", "Chuva(mm)",
+                     "Irrig.(mm)", "Escoamento(mm)", "Infil.(mm)", "Drenagem(mm)", "Evapo. Transp(mm)",
+                     "Evapo. Solo(mm)", "Evapo. Planta(mm)", "Agua no solo(mm)", "Agua no solo(mm3/mm3)",
+                     "Estresse hídrico", "Excesso de estresse hídrico")
 
-
+dataStation$choice <- paste("\"", dataStation$Name, "\"=\"", dataStation$ID, "\"",sep="")
+dataStation$Name <- as.character(dataStation$Name)
+dataStation$ID <- as.character(dataStation$ID)
 #shiny server body
 shinyServer(function(input, output, session) { 
   output$ui <- renderUI({
     sidebarPanel(
       selectInput(inputId = "cbxStations",
                   label = "Escolher a estação",
-                  choices = c(dataStation),
+                  choices = dataStation$Name,
                   selectize = TRUE)
     )
+  })
+  
+  output$tableResultsSoil <- renderDataTable({
+    data <- swOut
   })
   
   output$tableFinal <- renderDataTable({
     data <- wbalOut
   })
   
-  output$tableResults <- renderDataTable({
-    data <- swOut
+  output$tableResultsPlant <- renderDataTable({
+    data <- dataStation
   })
   
-  output$stationsTable <- renderDataTable({
-    stationsTable <- dataStation
-  })
-  
-  output$stations <- renderText({
-    stations <- dataStation
-    paste(stations$name)
-  })
-
 })
