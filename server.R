@@ -40,15 +40,15 @@ plantOut <- read.table("plant.out",skip = 9)
 swOut <- read.table("sw.out",skip = 6)
 wbalOut <- read.table("WBAL.OUT",skip = 4, sep = ":")
 
-#change de colnames for plantOut
+#change the colnames for plantOut
 colnames(plantOut) <- c("Dia do Ano", "Número de Folhas", "Acum.Temp. Reprod. (oC)", "Peso da Planta (g/m2)",
                         "Peso do Docel (g/m2)", "Peso da Raiz (g/m2)", "Peso da Fruta (g/m2)", 
                         "Ind. Area Foliar (m2/m2)")
 
-#change de colnames for wbalOut
+#change the colnames for wbalOut
 colnames(wbalOut) <- c("Descrição", "Valores")
 
-#change de colnames for swOut
+#change the colnames for swOut
 colnames(swOut) <- c("Dia do ano", "Rad. Solar(MJ/m2)", "Temp. Max(oC)", "Temp. Min(oC)", "Chuva(mm)",
                      "Irrig.(mm)", "Escoamento(mm)", "Infil.(mm)", "Drenagem(mm)", "Evapo. Transp(mm)",
                      "Evapo. Solo(mm)", "Evapo. Planta(mm)", "Agua no solo(mm)", "Agua no solo(mm3/mm3)",
@@ -57,6 +57,8 @@ colnames(swOut) <- c("Dia do ano", "Rad. Solar(MJ/m2)", "Temp. Max(oC)", "Temp. 
 dataStation$choice <- paste("\"", dataStation$Name, "\"=\"", dataStation$ID, "\"",sep="")
 dataStation$Name <- as.character(dataStation$Name)
 dataStation$ID <- as.character(dataStation$ID)
+
+
 #shiny server body
 shinyServer(function(input, output, session) { 
   output$ui <- renderUI({
@@ -64,10 +66,12 @@ shinyServer(function(input, output, session) {
       selectInput(inputId = "cbxStations",
                   label = "Escolher a estação",
                   choices = dataStation$Name,
-                  selectize = TRUE)
+                  selectize = TRUE),
+      
+      actionButton("runModel", "Rodar Modelo")
     )
   })
-  
+
   output$tableResultsPlant <- renderDataTable({
     data <- plantOut
   })

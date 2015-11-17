@@ -15,6 +15,7 @@ shinyUI(pageWithSidebar(
       tabPanel("Balanço hídrico SAZONAL", dataTableOutput(outputId="tableFinal")),
       tabPanel("Sobre", includeMarkdown("Documentacao/index.Rmd"))
     )
+    
   )
 ))
 
