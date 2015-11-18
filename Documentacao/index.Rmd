@@ -59,7 +59,7 @@ head (weatherData)
 
 ## Solo
 
-##Ajustando o modelo para três tipos de solo:
+### Ajustando o modelo para três tipos de solo:
 
 Após definido a bibliografia base, definiu-se três tipos de solo:
 
@@ -71,7 +71,7 @@ Solo argiloso com teor de argila de 716 g kg-1;
 
 Na tabela 1 abaixo ilustramos os parametros para cada tipo de solo:
 
-#### Tabela 1-Tipos de solos e suas caracteristicas
+### Tabela 1-Tipos de solos e suas caracteristicas
 !["tipos de solo"](TABELA-SOLOS.png)
 
 
@@ -90,16 +90,83 @@ DNRp: percentual de drenagem diária;
 SWC: lamina de água disponível no perfil de solo considerado (mm).
 Para calcular os valores de STp, FCp, WPp, DNRp e SWC se utilizou os parametros do modelo de Van Genuchten.
 
-###Assim, os cálculos para cada tipo de solo são:
+### Assim, os cálculos para cada tipo de solo são:
 
-####Para o solo arenoso:
+### Para o solo arenoso:
 
 !["tipos de solo"](SOLO-ARENOSO.png)
 
-####Para o solo médio:
+### Para o solo médio:
 
 !["tipos de solo"](SOLO-MEDIO.png)
 
-####Para o solo argiloso:
+### Para o solo argiloso:
 
 !["tipos de solo"](SOLO-ARGILOSO.png)
+
+### Uma Abordagem para o desenvolvimento de modelo de cultura.
+
+A definição de formatos de dados e arquivos para uso em modelos de cultura, para serem trocados por diferentes grupos, facilitando a cooperação entre experimentalistas, desenvolvedores e usuarios
+depende da utilização de programação modular.Uma vez que desta forma podemos adicionar mais modelos, aumentando a complexidade das simulações.
+
+### A abordagem modular irá:
+
+1) Facilitar a integração dos conhecimentos de diferentes disciplinas, melhorando assim a capacidade de previsão dos modelos;
+
+2) Permitir contribuições de muitos autores;
+
+3) Permitir uma maior flexibilidade nas futuras alterações de modelos, com módulos que serão adicionados, modificado ou substituindo estes, com pouco impacto para o programa principal ou outros módulos;
+
+4) Estender a vida e utilidade de modelos de simulação.
+
+### Critérios de uma estrutura modular genérica
+
+
+1) Os módulos devem estar relacionados diretamente a componentes do mundo real ou processos que são comuns a todas as plantas a serem modeladas;
+
+2) Os módulos devem representar uma função disciplinar de forma independente;
+
+3) variáveis de entrada e saída deve representar valores mensuráveis;
+
+4) A comunicação entre módulos deve ser exclusivamente via as variáveis de entrada e saída; e
+
+5) Os módulos devem ser validados de forma independente de outros módulos.
+
+Com base nos primeiros critérios, acima, cada módulo representa uma função física ou processo relacionado com o crescimento da cultura e é composto por, no mínimo, uma subrotina , ou um grupo de sub-rotinas ligadas. Estes processos de módulos são interdependentes, mas pode ser rodados apenas por meio de um conjunto definido de variáveis de entrada e saída, que são passados na entrada e saida dos módulos como argumentos de sub-rotinas.
+
+### Cada módulo deve:
+
+1) Ler os seus próprios parâmetros;
+
+2) Inicializar suas próprias variáveis;
+
+3) Aceitar variáveis passados para ele de outros módulos e do ambiente;
+
+4) Passar variáveis que são computados dentro do módulo;
+
+5) Possuir seu conjunto de variáveis de estado;
+
+6) Calcule as taxas de variação para as suas variáveis de estado;
+
+7) Integrar as suas variáveis de estado;
+
+8) Faça suas próprias variáveis como produção; e
+
+9) Operar quando ligado a um programa de teste simulado.
+
+Assim, todos os dados de entrada, a inicialização de variáveis, cálculos de taxa, os cálculos de integração e saída de dados relacionados com uma função específica são tratadas dentro de um módulo único. Os módulos podem ser executado como um modelo autônomo, quando ligado a um programa de driver principal.
+
+A figura abaixo ilustra o formato modular de um modelo de cultura simples , em que cada módulo tem dois ou mais dos cinco componentes seguintes:
+
+1. A seção **initialization** é usada para fornecer os dados de entrada e inicializar variáveis, é chamada uma vez por simulação.
+
+2. A secção **rate calculation** calcula a velocidade do processo e as taxas de variação das variáveis de estado com base em condições da simulação anterior. Esta rotina é chamado uma vez por intervalo de tempo da simulação.
+
+3. A secção  **integration**  atualiza as variaveis de estado, utilizando as taxas calculadas anteriormente.
+
+4. A seção **output** é chamada uma vez por dia para gerar relatórios de produção diária.
+
+5. A seção **close** é chamada uma vez no final da simulação para fechar arquivos de saída e gerar relatórios resumidos.
+
+
+!["Estrutura"](crop_model.png)
