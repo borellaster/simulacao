@@ -29,9 +29,9 @@ dataStation$url <-
     dataStation$ID, "/range/01-01-2013/01-01-2016")
 
 # Tipo de solo, para seleção
-#dataSoils <- read.table(text ="", colClasses =c("Integer", "character"), col.names = c("ID", "Name"))
-#dataSoils$ID <- c(1, 2, 3)
-#dataSoils$Name <- c("Argiloso", "Arenoso", "XXX")
+dataSoils <- data.frame( c(1, 2, 3, 4), c("Arenoso", "Medio", "Argiloso", "Default") )
+colnames(dataSoils) <- c("ID", "Name")
+dataSoils$Name <- as.character(dataSoils$Name)
 
 #
 #
@@ -148,15 +148,16 @@ shinyServer(function(input, output, session) {
   output$ui <- renderUI({
     sidebarPanel(
       h4("Instruções"),
-      p("Clique em Rodar Modelo após Escolher a Estação."),
+      p("Clique em Rodar Modelo após Escolher a Estação e o Tipo de Solo."),
       br(),
       selectInput(inputId = "cbxStations",
                   label = "Escolher a estação",
                   choices = dataStation$Name,
                   selectize = TRUE),
+      
       selectInput(inputId = "cbxSoils",
                   label = "Escolher o tipo de solo",
-                  choices = c(1, 2, 3, 4),
+                  choices = dataSoils$Name,
                   selectize = TRUE),
       
       actionButton("goSimulation", "Rodar Modelo"),
@@ -169,10 +170,11 @@ shinyServer(function(input, output, session) {
   }
   
   getSelectionSoil <- function() {
-    if (input$cbxSoils == 4) {
+    soilId <- as.integer(subset(dataSoils, Name == input$cbxSoils)$ID)
+    if (soilId == 4) {
       return(soil)
     } else {
-      return(functionSolos(input$cbxSoils))
+      return(functionSolos(soilId))
     }
   }
   
