@@ -9,10 +9,12 @@ shinyUI(pageWithSidebar(
   
   mainPanel(
     tabsetPanel(
-      tabPanel("Resultados da Simulação Planta", dataTableOutput(outputId="tableResultsPlant")),
+      # Show a plot of the generated distribution
+      tabPanel("Gráfico", plotOutput("distPlot")),
+      tabPanel("Resultados", dataTableOutput(outputId="tableResultsPlant")),
+      tabPanel("Balanço Hídrico", dataTableOutput(outputId="tableFinal")),
       tabPanel("Estações", dataTableOutput(outputId="tableResultsStation")),
-      tabPanel("Solo", dataTableOutput(outputId="tableResultsSoil")),
-      tabPanel("Balanço hídrico SAZONAL", dataTableOutput(outputId="tableFinal")),
+      tabPanel("Dados de Solo", dataTableOutput(outputId="tableResultsSoil")),
       tabPanel("Sobre", includeMarkdown("Documentacao/index.Rmd"))
     )
   )
