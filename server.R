@@ -23,11 +23,126 @@ colnames(dataStation)[1] <- "ID"
 colnames(dataStation)[2] <- "Name"
 dataStation$Name <- as.character(dataStation$Name)
 dataStation$ID <- as.character(dataStation$ID)
-
 dataStation$url <- 
   paste0(
     "http://dev.sisalert.com.br/apirest/api/v1/data/station/model/", 
     dataStation$ID, "/range/01-01-2013/01-01-2016")
+
+# Tipo de solo, para seleção
+#dataSoils <- read.table(text ="", colClasses =c("Integer", "character"), col.names = c("ID", "Name"))
+#dataSoils$ID <- c(1, 2, 3)
+#dataSoils$Name <- c("Argiloso", "Arenoso", "XXX")
+
+#
+#
+# Funções functionModelVanGenucthen e functionSolos foram fornecidas pelo GRUPO DE SOLOS
+#
+
+
+#parametros do modelo de Van Genucthen (1980) para solo arenoso com teor de argila de 152 g kg-1
+#dados disponiveis em Carducci et al., (2011)
+functionModelVanGenucthen<-function(thpmp,thsat,a,n,solo) {
+  result<-thpmp+((thsat-thpmp)/(1+(a*solo)^n)^(1-1/n))
+  return(result)
+}
+
+functionSolos <- function(tipoSolo){
+  
+  ####### solo arenoso com teor de argila de 152 g kg-1###############################
+  if (tipoSolo == 1) {
+    #Solos arenosos profundos com pouco silte e argila;
+    CN<-64
+    
+    # DP--> atribuindo a profundidade do perfil do solo (cm)
+    DP<-200
+    
+    # STp--> encontrando a umidade do solo saturado (thsat=0 kPa)
+    STp<-functionModelVanGenucthen(0.046,0.331,0.719,1.841,0.0)
+    
+    # FCp--> encontrando a umidade do solo na capacidade de campo (thCC=10 kPa)
+    FCp<-functionModelVanGenucthen(0.046,0.331,0.719,1.841,10)
+    
+    # WPp--> encontrando a umidade do solo no ponto de murcha permanente (thPMP=1500 kPa)
+    WPp<-functionModelVanGenucthen(0.046,0.331,0.719,1.841,1500)
+    WPp<- round(WPp, digits = 3)
+    
+    # DNRp--> encontrando o percentual de drenagem diaria (thsat-thCC)
+    DRNp<-STp-FCp
+    
+    # SWC--> encontrando a lamina de agua disponivel no perfil de solo considerado (mm)
+    SWC<-(STp-FCp)*DP*10
+    SWC
+    
+    # Retorna um vetor contendo o TipoSolo,CN, DP, STp, FCp, WPp, DRNp, SWC
+    dadosSolo<-data.frame(CN, DP, STp, FCp, WPp, DRNp, SWC)
+    
+    return(dadosSolo)
+  }
+  
+  #######solo medio com teor de argila de 420 g kg-1###############################
+  if (tipoSolo == 2) {
+    #Solos arenosos profundos com pouco silte e argila;
+    CN<-76
+    
+    # DP--> atribuindo a profundidade do perfil do solo (cm)
+    DP<-200
+    
+    # STp--> encontrando a umidade do solo saturado (thsat=0 kPa)
+    STp<-functionModelVanGenucthen(0.190,0.645,1.398,1.398,0.0)
+    
+    # FCp--> encontrando a umidade do solo na capacidade de campo (thCC=10 kPa)
+    FCp<-functionModelVanGenucthen(0.190,0.645,1.398,1.398,10)
+    
+    # WPp--> encontrando a umidade do solo no ponto de murcha permanente (thPMP=1500 kPa)
+    WPp<-functionModelVanGenucthen(0.190,0.645,1.398,1.398,1500)
+    WPp<- round(WPp, digits = 3)
+    
+    # DNRp--> encontrando o percentual de drenagem diaria (thsat-thCC)
+    DRNp<-STp-FCp
+    
+    # SWC--> encontrando a lamina de agua disponivel no perfil de solo considerado (mm)
+    SWC<-(STp-FCp)*DP*10
+    
+    # Retorna um vetor contendo o TipoSolo,CN, DP, STp, FCp, WPp, DRNp, SWC
+    dadosSolo<-data.frame(CN, DP, STp, FCp, WPp, DRNp, SWC)
+    
+    return(dadosSolo)
+  }
+  
+  #######solo argiloso com teor de argila de 716 g kg-1#############################
+  if (tipoSolo == 3) {
+    #Solos arenosos profundos com pouco silte e argila;
+    CN<-84
+    
+    # DP--> atribuindo a profundidade do perfil do solo (cm)
+    DP<-200
+    
+    thpmp=0.250
+    thsat=0.806
+    a=1.786
+    n=1.599
+    # STp--> encontrando a umidade do solo saturado (thsat=0 kPa)
+    STp<-functionModelVanGenucthen(0.250,0.806,1.786,1.599,0.0)
+    
+    # FCp--> encontrando a umidade do solo na capacidade de campo (thCC=10 kPa)
+    FCp<-functionModelVanGenucthen(0.250,0.806,1.786,1.599,10)
+    
+    # WPp--> encontrando a umidade do solo no ponto de murcha permanente (thPMP=1500 kPa)
+    WPp<-functionModelVanGenucthen(0.250,0.806,1.786,1.599,1500)
+    WPp<- round(WPp, digits = 3)
+    
+    # DNRp--> encontrando o percentual de drenagem diaria (thsat-thCC)
+    DRNp<-STp-FCp
+    
+    # SWC--> encontrando a lamina de agua disponivel no perfil de solo considerado (mm)
+    SWC<-(STp-FCp)*DP*10
+    
+    # Retorna um vetor contendo o TipoSolo,CN, DP, STp, FCp, WPp, DRNp, SWC
+    dadosSolo<-data.frame(CN, DP, STp, FCp, WPp, DRNp, SWC)
+    
+    return(dadosSolo)
+  }
+}
 
 shinyServer(function(input, output, session) {
   output$ui <- renderUI({
@@ -39,6 +154,10 @@ shinyServer(function(input, output, session) {
                   label = "Escolher a estação",
                   choices = dataStation$Name,
                   selectize = TRUE),
+      selectInput(inputId = "cbxSoils",
+                  label = "Escolher o tipo de solo",
+                  choices = c(1, 2, 3, 4),
+                  selectize = TRUE),
       
       actionButton("goSimulation", "Rodar Modelo"),
       uiOutput("mesg")
@@ -49,12 +168,20 @@ shinyServer(function(input, output, session) {
     return(as.character(subset(dataStation, Name == input$cbxStations)$url))
   }
   
+  getSelectionSoil <- function() {
+    if (input$cbxSoils == 4) {
+      return(soil)
+    } else {
+      return(functionSolos(input$cbxSoils))
+    }
+  }
+  
   observeEvent(input$goSimulation, {
     output$mesg <- renderText("")
-    rodarSimulacao(getSelectionKey())
+    rodarSimulacao(getSelectionKey(), getSelectionSoil())
   })
   
-  rodarSimulacao <- function(url){
+  rodarSimulacao <- function(url, soils){
     
     #url <- paste("http://dev.sisalert.com.br/apirest/api/v1/data/station/model/",
     #             input$cbxStations[1], "/range/01-01-2013/01-01-2016", sep="")
@@ -74,7 +201,7 @@ shinyServer(function(input, output, session) {
       weatherData <- data.frame('date'=weatherData$date,'srad'=weatherData$srad,'tmax'=weatherData$tmax,'tmin'=weatherData$tmin,'rain'=weatherData$rain,'par'=weatherData$par)
       ##
       
-      runSimulation(weather = weatherData,plant = plant,soil = soil,irrig = i,doyp = 1, frop = 1)
+      runSimulation(weather = weatherData,plant = plant,soil = soils,irrig = i,doyp = 1, frop = 1)
       
       output$tableResultsPlant <- renderDataTable({
         
