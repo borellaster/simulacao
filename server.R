@@ -5,6 +5,7 @@ library(rjson)
 library(FortranRIntegration)
 library(shiny)
 library(ggplot2)
+library(reshape)
 
 
 #load the data
@@ -252,6 +253,16 @@ shinyServer(function(input, output, session) {
           geom_line(aes(y = iaf)) +
           labs (title="Índice de Area Foliar X Dia", x="Dia do Ano", y="Ind. Area Foliar (m2/m2)")
       })
+      
+      
+      output$distPlotPerondi <- renderPlot({
+        dataCurlP <- getURLContent("http://dev.sisalert.com.br/apirest/api/v1/data/station/model/5602a58b92c884831962ceea/range/01-01-2014/01-30-2015", ssl.verifypeer = FALSE)
+        jW <- fromJSON(dataCurlP)
+        wD <- do.call(rbind, lapply(jW, function(x) data.frame(x)))
+        d <- melt(wD, id.vars="date")
+        ggplot(d, aes(date,value,group=1)) + geom_smooth(method="auto") + geom_line(color="red") + facet_wrap(~variable)
+      })
+      
     } else {
       output$mesg <- renderUI(p("Estação não possui dados suficientes para uma simulação!", style = "color:red"))
     }

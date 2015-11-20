@@ -11,6 +11,7 @@ shinyUI(pageWithSidebar(
     tabsetPanel(
       # Show a plot of the generated distribution
       tabPanel("Gráfico", plotOutput("distPlot")),
+      tabPanel("Gráfico Metereológico", plotOutput("distPlotPerondi")),
       tabPanel("Resultados", mainPanel(tabsetPanel (
         tabPanel("Simulação do Crescimento", dataTableOutput(outputId="tableResultsPlant")),
         tabPanel("Balanço Hídrico do Solo", dataTableOutput(outputId="tableResultsSoil")),
