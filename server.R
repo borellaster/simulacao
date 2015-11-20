@@ -193,6 +193,7 @@ shinyServer(function(input, output, session) {
     jsonWeather <- fromJSON(dataCurl)
     weatherData <- do.call(rbind, lapply(jsonWeather, function(x) data.frame(x)))
     
+    
     # As estações que não possem dados suficientes para uma simulação, ou 365 dias de dados da erro
     if (dim(weatherData)[1] > 365) {
       
