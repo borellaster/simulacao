@@ -15,9 +15,11 @@ soil <- getSoilDataFromTxt(paste(path,"/data/", sep = ""))
 plant <- getPlantDataFromTxt(paste(path,"/data/", sep = ""))
 
 #collect stations
-dataCurl <- getURLContent("http://dev.sisalert.com.br/apirest/api/v1/stations")
-json <- fromJSON(dataCurl)
-dataStation <- do.call(rbind, lapply(json, function(x) data.frame(x)))
+dataCurl <- getURLContent("http://dev.sisalert.com.br/apirest/api/v1/stations/src/INMET/lobs/true", ssl.verifypeer = FALSE)
+jsonStation <- fromJSON(dataCurl)
+stations <- data.frame("id"=sapply(jsonStation, function(x) x[[1]]), "name"=sapply(jsonStation, function(x) x[[2]]), "code"=sapply(jsonStation, function(x) x$metaData$weather[[3]]), "maxdatetime"=as.character(sapply(jsonStation, function(x) x$lobs$datetime)),"timezone"=as.character(sapply(jsonStation, function(x) x$location$zoneName)))
+
+dataStation <- subset(stations, id=='564f796a16af35ca3decd181' | id=='564f796916af35ca3decd180' | id=='564f7b0316af35ca3decd292' | id=='564f7ce316af35ca3decd3e1')
 
 #change de colnames
 colnames(dataStation)[1] <- "ID"
@@ -27,7 +29,7 @@ dataStation$ID <- as.character(dataStation$ID)
 dataStation$url <- 
   paste0(
     "http://dev.sisalert.com.br/apirest/api/v1/data/station/model/", 
-    dataStation$ID, "/range/01-01-2013/01-01-2016")
+    dataStation$ID, "/range/01-01-2013/12-31-2014")
 
 # Tipo de solo, para seleção
 dataSoils <- data.frame( c(1, 2, 3, 4), c("Arenoso", "Medio", "Argiloso", "Default") )
@@ -38,7 +40,6 @@ dataSoils$Name <- as.character(dataSoils$Name)
 #
 # Funções functionModelVanGenucthen e functionSolos foram fornecidas pelo GRUPO DE SOLOS
 #
-
 
 #parametros do modelo de Van Genucthen (1980) para solo arenoso com teor de argila de 152 g kg-1
 #dados disponiveis em Carducci et al., (2011)
@@ -256,10 +257,11 @@ shinyServer(function(input, output, session) {
       })
       
       
-      output$distPlotPerondi <- renderPlot({
-        dataCurlP <- getURLContent("http://dev.sisalert.com.br/apirest/api/v1/data/station/model/5602a58b92c884831962ceea/range/01-01-2014/01-30-2015", ssl.verifypeer = FALSE)
+      output$plotMeteorologico <- renderPlot({
+        dataCurlP <- getURLContent(getSelectionKey(), ssl.verifypeer = FALSE)
         jW <- fromJSON(dataCurlP)
         wD <- do.call(rbind, lapply(jW, function(x) data.frame(x)))
+        # trocar codigo Perondi
         d <- melt(wD, id.vars="date")
         ggplot(d, aes(date,value,group=1)) + geom_smooth(method="auto") + geom_line(color="red") + facet_wrap(~variable)
       })
