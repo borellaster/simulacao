@@ -6,6 +6,7 @@ library(FortranRIntegration)
 library(shiny)
 library(ggplot2)
 library(reshape)
+library(scales)
 
 
 #load the data
@@ -29,7 +30,7 @@ dataStation$ID <- as.character(dataStation$ID)
 dataStation$url <- 
   paste0(
     "http://dev.sisalert.com.br/apirest/api/v1/data/station/model/", 
-    dataStation$ID, "/range/01-01-2013/12-31-2014")
+    dataStation$ID, "/range/11-01-2013/12-31-2014")
 
 # Tipo de solo, para seleção
 dataSoils <- data.frame( c(1, 2, 3, 4), c("Arenoso", "Medio", "Argiloso", "Default") )
@@ -146,6 +147,42 @@ functionSolos <- function(tipoSolo){
   }
 }
 
+#
+#
+# Funções gráfico do Meterologico
+# Função de PLOT multiplo
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  if (is.null(layout)) {
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+  } else {
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    for (i in 1:numPlots) {
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+# Função para transformar fator em numeric
+as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+
+
+
+#################
+# Shiny Server
+#################
 shinyServer(function(input, output, session) {
   output$ui <- renderUI({
     sidebarPanel(
@@ -261,9 +298,38 @@ shinyServer(function(input, output, session) {
         dataCurlP <- getURLContent(getSelectionKey(), ssl.verifypeer = FALSE)
         jW <- fromJSON(dataCurlP)
         wD <- do.call(rbind, lapply(jW, function(x) data.frame(x)))
-        # trocar codigo Perondi
-        d <- melt(wD, id.vars="date")
-        ggplot(d, aes(date,value,group=1)) + geom_smooth(method="auto") + geom_line(color="red") + facet_wrap(~variable)
+        
+        wD$date <- strptime(wD$date,"%y%j")
+        
+        wD$par <- as.numeric.factor(wD$par)
+        wD$rain <- as.numeric.factor(wD$rain)
+        wD$srad <- as.numeric.factor(wD$srad)
+        wD$tmax <- as.numeric.factor(wD$tmax)
+        wD$tmin <- as.numeric.factor(wD$tmin)
+        
+        p1 <- ggplot(wD, aes(x=date, y=par)) +
+          geom_line(color="red") +  scale_x_datetime() + 
+          ggtitle("PAR") + ylab("(MJ/m²) * 2 =~ mol[photon]/m²-day") + xlab("Data") 
+        
+        p2 <- ggplot(wD, aes(x=date, y=rain)) +
+          geom_line(color="red") + scale_x_datetime() + geom_point(colour="red", size=3, shape=21, fill="white") +
+          ggtitle("Precipitação") + ylab("mm") + xlab("Data") 
+        
+        # Third plot
+        p3 <- ggplot(wD, aes(x=date, y=srad)) +
+          geom_line(color="red") + scale_x_datetime() + geom_point(colour="red", size=3, shape=21, fill="white") +
+          ggtitle("Radiação Solar") + ylab("W/m²") + xlab("Data")
+        
+        # Fourth plot
+        p4 <- ggplot(wD, aes(x=date, y=tmax)) +
+          geom_line(color="red") + scale_x_datetime() + geom_point(colour="red", size=3, shape=21, fill="white") +
+          ggtitle("Temperatura Máxima") + ylab("ºC") + xlab("Data")
+        
+        p5 <- ggplot(wD, aes(x=date, y=tmin)) +
+          geom_line(color="red") + scale_x_datetime() + geom_point(colour="red", size=3, shape=21, fill="white") +
+          ggtitle("Temperatura Mínima") + ylab("ºC") + xlab("Data")
+        
+        multiplot(p1, p2, p3, p4, p5, cols=2)
       })
       
     } else {
